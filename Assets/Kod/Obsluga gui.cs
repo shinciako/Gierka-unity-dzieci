@@ -18,13 +18,15 @@ public class MenuController : MonoBehaviour
 
     public void LoadChallengesMode()
     {
-     
         SceneManager.LoadScene("Tryb wyzwań");
     }
 
     public void LoadSettings() =>
-      
         SceneManager.LoadScene("Ustawienia");
+
+    public void ChangeDifficulty(){
+        
+    }
 
     public void ExitGame()
     {
