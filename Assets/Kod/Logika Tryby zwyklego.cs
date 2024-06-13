@@ -13,43 +13,42 @@ public class GameController : MonoBehaviour
     public GameObject wrongAnswerPopup;
 
     private int score = 0;
+    private int clicks = 0;
     private int correctAnswerIndex;
 
     void Start()
     {
-        // Ensure there's an Event System in the scene
         if (FindObjectOfType<EventSystem>() == null)
         {
             GameObject eventSystem = new GameObject("EventSystem");
             eventSystem.AddComponent<EventSystem>();
             eventSystem.AddComponent<StandaloneInputModule>();
         }
+        InitializeAnswerButtons();
+        wrongAnswerPopup.SetActive(false);
+        GenerateQuestion();
+        UpdateScore(0);
+    }
 
+     void InitializeAnswerButtons()
+    {
         for (int i = 0; i < answerButtons.Length; i++)
         {
             int index = i;
             answerButtons[i].onClick.AddListener(() => AnswerButtonClicked(index));
         }
-
-        wrongAnswerPopup.SetActive(false); // Ensure the popup is initially hidden
-        GenerateQuestion();
-        UpdateScore(0);
     }
 
     void GenerateQuestion()
     {
-        wrongAnswerPopup.SetActive(false); // Hide the popup when generating a new question
-
+        wrongAnswerPopup.SetActive(false);
         int a, b, correctAnswer = 0;
         string opSign = "";
-
-        // Loop until a valid question is generated
         while (true)
         {
-            a = Random.Range(1, 101);
-            b = Random.Range(1, 101);
-            int operation = Random.Range(0, 4); // 0 for addition, 1 for subtraction, 2 for multiplication, 3 for division
-
+            a = Random.Range(1, 51);
+            b = Random.Range(1, 51);
+            int operation = Random.Range(0, 4); // 0 +, 1 -, 2 *, 3 /
             switch (operation)
             {
                 case 0:
@@ -64,7 +63,7 @@ public class GameController : MonoBehaviour
                     }
                     else
                     {
-                        continue; // Skip if the result would be negative
+                        continue; // skip if negative
                     }
                     break;
                 case 2:
@@ -79,12 +78,12 @@ public class GameController : MonoBehaviour
                     }
                     else
                     {
-                        continue; // Skip if the division is not exact
+                        continue; //skip not exact
                     }
                     break;
             }
 
-            // Ensure the correct answer is within the range of 0-100
+            // score 0-100
             if (correctAnswer >= 0 && correctAnswer <= 100)
             {
                 break;
@@ -105,7 +104,6 @@ public class GameController : MonoBehaviour
             if (i == correctAnswerIndex)
             {
                 buttonText.text = correctAnswer.ToString();
-                Debug.Log("Setting correct answer at index " + i + ": " + correctAnswer);
             }
             else
             {
@@ -116,24 +114,21 @@ public class GameController : MonoBehaviour
                 } while (wrongAnswer == correctAnswer || wrongAnswer < 0 || wrongAnswer > 100);
 
                 buttonText.text = wrongAnswer.ToString();
-                Debug.Log("Setting wrong answer at index " + i + ": " + wrongAnswer);
             }
         }
     }
 
     public void AnswerButtonClicked(int buttonIndex)
     {
-        Debug.Log("Button clicked: " + buttonIndex);
-        Debug.Log("Correct answer index: " + correctAnswerIndex);
         if (buttonIndex == correctAnswerIndex)
         {
             UpdateScore(1);
-            Debug.Log("Correct Answer!");
             GenerateQuestion();
+            Debug.Log("bajlando");
         }
         else
         {
-            Debug.Log("Wrong Answer!");
+            Debug.Log("not bajlando");
             StartCoroutine(ShowWrongAnswerPopup());
         }
     }
@@ -141,15 +136,13 @@ public class GameController : MonoBehaviour
     IEnumerator ShowWrongAnswerPopup()
     {
         wrongAnswerPopup.SetActive(true);
-        yield return new WaitForSeconds(2); // Show the popup for 2 seconds
+        yield return new WaitForSeconds(2);
         wrongAnswerPopup.SetActive(false);
     }
 
     void UpdateScore(int change)
     {
-        Debug.Log("UpdateScore called with change: " + change);
         score += change;
-        Debug.Log("New score: " + score);
         scoreText.text = "Score: " + score.ToString();
     }
 }
