@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -11,10 +12,20 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public Button[] answerButtons;
     public GameObject wrongAnswerPopup;
+    public PopupController winPopup;
+    public GameObject pop;
+    public GameObject buttonMenu;
+    public ProgressBar progressBar;
 
     private int score = 0;
-    private int clicks = 0;
     private int correctAnswerIndex;
+    private int numOfQuestions=2;
+    private int tries = 0;
+
+    private float startTime;
+    private float elapsedTime;
+
+    
 
     void Start()
     {
@@ -24,10 +35,16 @@ public class GameController : MonoBehaviour
             eventSystem.AddComponent<EventSystem>();
             eventSystem.AddComponent<StandaloneInputModule>();
         }
+        progressBar.max = numOfQuestions;
         InitializeAnswerButtons();
         wrongAnswerPopup.SetActive(false);
         GenerateQuestion();
         UpdateScore(0);
+        startTime = Time.realtimeSinceStartup;
+    }
+
+    void Update(){
+        elapsedTime = Time.realtimeSinceStartup - startTime;
     }
 
      void InitializeAnswerButtons()
@@ -120,15 +137,14 @@ public class GameController : MonoBehaviour
 
     public void AnswerButtonClicked(int buttonIndex)
     {
+        tries++;
         if (buttonIndex == correctAnswerIndex)
         {
             UpdateScore(1);
-            GenerateQuestion();
-            Debug.Log("bajlando");
+            UpdateProgressBar();
         }
         else
         {
-            Debug.Log("not bajlando");
             StartCoroutine(ShowWrongAnswerPopup());
         }
     }
@@ -143,6 +159,25 @@ public class GameController : MonoBehaviour
     void UpdateScore(int change)
     {
         score += change;
-        scoreText.text = "Score: " + score.ToString();
+        if(score==numOfQuestions){
+            buttonMenu.SetActive(false);
+            int accurate = CalculatePercentage();
+            winPopup.SetNumbers(accurate,elapsedTime);
+            pop.SetActive(true);
+        }else{
+            scoreText.text = "Pytanie: " + (1+score).ToString() +" z "+numOfQuestions;
+            GenerateQuestion();
+        }
+    }
+
+    int CalculatePercentage(){
+    float percentage = ((float)numOfQuestions / (float)tries) * 100.0f;
+    int roundedPercentage = Mathf.CeilToInt(percentage);
+    return roundedPercentage;
+}
+
+    void UpdateProgressBar()
+    {
+        progressBar.current = score;
     }
 }
