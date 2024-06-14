@@ -78,9 +78,23 @@ public class Tryby : MonoBehaviour
 
     void GenerateQuestion()
     {
+         foreach (Button button in answerButtons)
+        {
+            button.interactable = true;
+            button.image.enabled = true;
+            TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+            buttonText.color = Color.black;
+            buttonText.fontSize = 24;
+            buttonText.fontStyle = FontStyles.Normal;
+
+        }
         wrongAnswerPopup.SetActive(false);
         int correctAnswerQ = GenerateQuestionEasy();
         SetAnswers(correctAnswerQ);
+        if (wrongAnswerCoroutine != null)
+        {
+        StopCoroutine(wrongAnswerCoroutine);
+        }
     }
 
     int GenerateQuestionEasy()
@@ -138,6 +152,7 @@ public class Tryby : MonoBehaviour
 
     void SetAnswers(int correctAnswer)
     {
+
         correctAnswerIndex = Random.Range(0, answerButtons.Length);
         for (int i = 0; i < answerButtons.Length; i++)
         {
@@ -160,14 +175,29 @@ public class Tryby : MonoBehaviour
         }
     }
 
-    public void AnswerButtonClicked(int buttonIndex)
+private Coroutine wrongAnswerCoroutine;
+
+public void AnswerButtonClicked(int buttonIndex)
+{
+    tries++;
+    if (buttonIndex == correctAnswerIndex)
     {
-        tries++;
-        if (buttonIndex == correctAnswerIndex)
+        UpdateScore(1);
+        if (wrongAnswerCoroutine != null)
         {
-            UpdateScore(1);
+            StopCoroutine(wrongAnswerCoroutine);
         }
     }
+    else
+    {
+        if (wrongAnswerCoroutine != null)
+        {
+            StopCoroutine(wrongAnswerCoroutine);
+        }
+        wrongAnswerCoroutine = StartCoroutine(ShowWrongAnswerPopup(buttonIndex));
+    }
+}
+
 
     void UpdateScore(int change)
     {
@@ -178,7 +208,7 @@ public class Tryby : MonoBehaviour
 
     int CalculatePercentage()
     {
-        float percentage = ((float)score / (float)tries) * 100.0f; // Fixed typo: numOfQuestions to score
+        float percentage = ((float)score / (float)tries) * 100.0f;
         int roundedPercentage = Mathf.CeilToInt(percentage);
         return roundedPercentage;
     }
@@ -187,4 +217,25 @@ public class Tryby : MonoBehaviour
     {
         progressBar.current = score;
     }
+
+    IEnumerator ShowWrongAnswerPopup(int index)
+{
+    answerButtons[index].interactable = false;
+    answerButtons[index].image.enabled = false;
+    
+    TextMeshProUGUI childText = answerButtons[index].GetComponentInChildren<TextMeshProUGUI>();
+    
+    childText.text = "Niepoprawna odpowiedź";
+    childText.color = Color.red;
+    childText.fontSize = 30; 
+    childText.fontStyle = FontStyles.Bold;
+
+    yield return new WaitForSeconds(1);
+
+    childText.text = "";
+    childText.color = Color.white; 
+    childText.fontSize = 20; 
+    childText.fontStyle = FontStyles.Normal; 
+}
+
 }
