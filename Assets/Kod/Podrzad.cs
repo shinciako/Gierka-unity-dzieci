@@ -133,6 +133,10 @@ public class Podrzad : MonoBehaviour
             UpdateScore(1);
         }
         else{
+             foreach (Button button in answerButtons)
+            {
+                button.interactable = false;
+            }
             scoreText.text ="";
             winPopup.SetScore(score);
             pop.SetActive(true);

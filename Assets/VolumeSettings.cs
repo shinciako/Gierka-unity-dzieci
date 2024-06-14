@@ -23,7 +23,6 @@ public class VolumeSettings : MonoBehaviour
         if (AudioManager.instance != null)
         {
             AudioManager.instance.SetVolume(volumeNormalized);
-            Debug.Log(volumeLevel);
         }
     }
 }

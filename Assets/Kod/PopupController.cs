@@ -44,5 +44,4 @@ public class PopupController : MonoBehaviour
             return string.Format("Czas: {0} sekund", seconds);
         }
     }
-
 }

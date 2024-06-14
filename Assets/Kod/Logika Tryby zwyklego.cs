@@ -316,7 +316,6 @@ public class GameController : MonoBehaviour
             question += $" {d}?";
         }
 
-        Debug.Log($"Generated Question: {question} = {correctAnswer}");
         questionText.text = question;
         return correctAnswer;
     }
@@ -372,6 +371,10 @@ public class GameController : MonoBehaviour
         if (score == numOfQuestions)
         {
             buttonMenu.SetActive(false);
+            foreach (Button button in answerButtons)
+            {
+                button.interactable = false;
+            }
             int accurate = CalculatePercentage();
             winPopup.SetNumbers(accurate, elapsedTime);
             pop.SetActive(true);

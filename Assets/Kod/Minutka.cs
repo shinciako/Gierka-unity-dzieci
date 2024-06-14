@@ -48,6 +48,10 @@ public class Tryby : MonoBehaviour
         int seconds = Mathf.FloorToInt(elapsedTime % 60);
         if (elapsedTime >=60)
         {
+            foreach (Button button in answerButtons)
+            {
+                button.interactable = false;
+            }
             progressBar.current = 0;
             int accurate = CalculatePercentage();
             winPopup.SetNumbersM(accurate, score);
