@@ -15,7 +15,7 @@ public class MenuController : MonoBehaviour
 
     public void LoadChallengesMode()
     {
-        SceneManager.LoadScene("Tryb wyzwań");
+        SceneManager.LoadScene("trybWyzwan");
     }
 
     public void LoadSettings() =>
@@ -25,7 +25,7 @@ public class MenuController : MonoBehaviour
         SceneManager.LoadScene("Minutka");
 
 
-    public void LoadPoorzednia() =>
+    public void LoadPodrzad() =>
         SceneManager.LoadScene("Podrzad");
     public void ChangeDifficulty(){
         

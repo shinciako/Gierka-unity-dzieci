@@ -1,8 +1,14 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - AudioManager
     - GameController
+    - LevelControll
     - MenuController
+    - Podrzad
+    - PopupController
+    - ProgressBar
+    - Tryby
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro:
@@ -75,7 +81,16 @@ ScriptsOnlyBuild:
     methodName: LoadChallengesMode
   - assembly: Assembly-CSharp
     fullTypeName: MenuController
-    methodName: ExitGame
+    methodName: LoadMenu
+  - assembly: Assembly-CSharp
+    fullTypeName: GameController
+    methodName: AnswerButtonClicked
+  - assembly: Assembly-CSharp
+    fullTypeName: GameController
+    methodName: AnswerButtonClicked
+  - assembly: Assembly-CSharp
+    fullTypeName: MenuController
+    methodName: LoadMenu
   - assembly: Assembly-CSharp
     fullTypeName: MenuController
     methodName: LoadMenu
@@ -89,11 +104,14 @@ ScriptsOnlyBuild:
     fullTypeName: MenuController
     methodName: LoadMenu
   - assembly: Assembly-CSharp
-    fullTypeName: GameController
-    methodName: AnswerButtonClicked
+    fullTypeName: MenuController
+    methodName: LoadMenu
   - assembly: Assembly-CSharp
-    fullTypeName: GameController
-    methodName: AnswerButtonClicked
+    fullTypeName: MenuController
+    methodName: LoadMenu
+  - assembly: Assembly-CSharp
+    fullTypeName: MenuController
+    methodName: LoadMenu
   sceneClasses:
     Assets/Scenes/GUI.unity:
     - Class: 1
@@ -112,6 +130,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
     - Class: 89
       Script: {instanceID: 0}
     - Class: 104
@@ -121,29 +143,143 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1602}
     - Class: 114
-      Script: {instanceID: 2182}
+      Script: {instanceID: 1810}
     - Class: 114
-      Script: {instanceID: 2552}
+      Script: {instanceID: 2184}
     - Class: 114
-      Script: {instanceID: 2604}
+      Script: {instanceID: 2556}
     - Class: 114
-      Script: {instanceID: 2808}
+      Script: {instanceID: 2608}
     - Class: 114
-      Script: {instanceID: 3098}
+      Script: {instanceID: 2812}
     - Class: 114
-      Script: {instanceID: 3976}
+      Script: {instanceID: 3102}
     - Class: 114
-      Script: {instanceID: 4084}
+      Script: {instanceID: 3980}
     - Class: 114
-      Script: {instanceID: 4336}
+      Script: {instanceID: 4088}
     - Class: 114
-      Script: {instanceID: 5040}
+      Script: {instanceID: 4340}
     - Class: 114
-      Script: {instanceID: 5588}
+      Script: {instanceID: 5044}
     - Class: 114
-      Script: {instanceID: 5740}
+      Script: {instanceID: 5592}
     - Class: 114
-      Script: {instanceID: 6056}
+      Script: {instanceID: 5744}
+    - Class: 114
+      Script: {instanceID: 6062}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/Minutka.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 89
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 108
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 1602}
+    - Class: 114
+      Script: {instanceID: 2356}
+    - Class: 114
+      Script: {instanceID: 2556}
+    - Class: 114
+      Script: {instanceID: 2812}
+    - Class: 114
+      Script: {instanceID: 3102}
+    - Class: 114
+      Script: {instanceID: 5044}
+    - Class: 114
+      Script: {instanceID: 5592}
+    - Class: 114
+      Script: {instanceID: 5744}
+    - Class: 114
+      Script: {instanceID: 5912}
+    - Class: 114
+      Script: {instanceID: 27278}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/Podrzad.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 89
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 108
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 1602}
+    - Class: 114
+      Script: {instanceID: 2556}
+    - Class: 114
+      Script: {instanceID: 2812}
+    - Class: 114
+      Script: {instanceID: 3102}
+    - Class: 114
+      Script: {instanceID: 5044}
+    - Class: 114
+      Script: {instanceID: 5592}
+    - Class: 114
+      Script: {instanceID: 5744}
+    - Class: 114
+      Script: {instanceID: 5912}
+    - Class: 114
+      Script: {instanceID: 38434}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -184,19 +320,23 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1602}
     - Class: 114
-      Script: {instanceID: 2552}
+      Script: {instanceID: 2356}
     - Class: 114
-      Script: {instanceID: 2808}
+      Script: {instanceID: 2556}
     - Class: 114
-      Script: {instanceID: 3098}
+      Script: {instanceID: 2812}
     - Class: 114
-      Script: {instanceID: 5040}
+      Script: {instanceID: 3102}
     - Class: 114
-      Script: {instanceID: 5524}
+      Script: {instanceID: 5044}
     - Class: 114
-      Script: {instanceID: 5588}
+      Script: {instanceID: 5528}
     - Class: 114
-      Script: {instanceID: 5740}
+      Script: {instanceID: 5592}
+    - Class: 114
+      Script: {instanceID: 5744}
+    - Class: 114
+      Script: {instanceID: 5912}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -237,17 +377,19 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1602}
     - Class: 114
-      Script: {instanceID: 2552}
+      Script: {instanceID: 2556}
     - Class: 114
-      Script: {instanceID: 2808}
+      Script: {instanceID: 2812}
     - Class: 114
-      Script: {instanceID: 3098}
+      Script: {instanceID: 3102}
     - Class: 114
-      Script: {instanceID: 5040}
+      Script: {instanceID: 5044}
     - Class: 114
-      Script: {instanceID: 5588}
+      Script: {instanceID: 5592}
     - Class: 114
-      Script: {instanceID: 5740}
+      Script: {instanceID: 5744}
+    - Class: 114
+      Script: {instanceID: 7218}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -327,6 +469,12 @@ ScriptsOnlyBuild:
     className: UnityOnCollisionStayMessageListener
   - hash:
       serializedVersion: 2
+      Hash: ccbed435300ca4f84acad09584f419e2
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: AudioManager
+  - hash:
+      serializedVersion: 2
       Hash: f854af586011dd194574f89546642e29
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
@@ -379,6 +527,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI
     namespaceName: UnityEngine.UI
     className: RawImage
+  - hash:
+      serializedVersion: 2
+      Hash: 67dc513b815bbcc292cf7ce170c2dace
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: ProgressBar
   - hash:
       serializedVersion: 2
       Hash: 1321993db8249e1e05e1e0492b2bbdc3
@@ -951,7 +1105,7 @@ ScriptsOnlyBuild:
     className: Benchmark02
   - hash:
       serializedVersion: 2
-      Hash: 6810bce5869c089d2cc1ecb4f552fdb2
+      Hash: f024677081b90ef58219926f1534da8f
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: GameController
@@ -985,6 +1139,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro
     namespaceName: TMPro
     className: TextMeshProUGUI
+  - hash:
+      serializedVersion: 2
+      Hash: fe103457bb84efae7bccffb2945b02f7
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: PopupController
   - hash:
       serializedVersion: 2
       Hash: da5a949a0bbd2ff91bc51c5805c2c41f
@@ -1161,6 +1321,12 @@ ScriptsOnlyBuild:
     className: UnityOnSubmitMessageListener
   - hash:
       serializedVersion: 2
+      Hash: 28c32dcfb766a9e9b5015fe555a13290
+    assemblyName: Assembly-CSharp
+    namespaceName: bitemegames.chinesemusic
+    className: DemoScene
+  - hash:
+      serializedVersion: 2
       Hash: 5ebc58ec194dd44630b25fcc270ad4af
     assemblyName: UnityEngine.UI
     namespaceName: UnityEngine.UI
@@ -1195,6 +1361,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI
     namespaceName: UnityEngine.UI
     className: ScrollRect
+  - hash:
+      serializedVersion: 2
+      Hash: 4f4030aef96a165004d98df77ebd5a33
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: LevelControll
   - hash:
       serializedVersion: 2
       Hash: 9a174471d4db2c0c6d3ac47d2f818db1
@@ -1303,9 +1475,23 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
+  - hash:
+      serializedVersion: 2
+      Hash: 32bf0bf29850ea8b373c7f937fcac8ce
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: Tryby
+  - hash:
+      serializedVersion: 2
+      Hash: d2a43ded47590eedac3c82c8bec8c5cc
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: Podrzad
   platform: 2
   scenePathNames:
   - Assets/Scenes/GUI.unity
   - Assets/Scenes/Ustawienia.unity
   - "Assets/Scenes/Tryb zwyk\u0142y.unity"
-  playerPath: /Users/chris/Desktop/ProjektDotNet.app
+  - Assets/Scenes/Minutka.unity
+  - Assets/Scenes/Podrzad.unity
+  playerPath: /Users/shinciako/xd.app
