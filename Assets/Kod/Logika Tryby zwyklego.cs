@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class GameController : MonoBehaviour
 {
@@ -95,7 +96,7 @@ public class GameController : MonoBehaviour
                     correctAnswerQ = GenerateQuestionEasy();
                     break;
                 case 1:
-                    correctAnswerQ = GenerateQuestionEasy();
+                    correctAnswerQ = GenerateQuestionMid();
                     break;
                 case 2:
                     correctAnswerQ = GenerateQuestionEasy();
@@ -158,6 +159,82 @@ public class GameController : MonoBehaviour
         questionText.text = $"Ile to: {a} {opSign} {b}?";
         return correctAnswer;
     }
+
+
+int GenerateQuestionMid()
+{
+    wrongAnswerPopup.SetActive(false);
+
+    int correctAnswer = 0;
+
+    int a = Random.Range(1, 51);
+    int b = Random.Range(1, 51);
+    int c = Random.Range(1, 51);
+
+    //all comb without double */
+    List<(string, int)> operations = new List<(string, int)>
+    {
+        ("++", a + b + c),
+        ("+-", a + b - c),
+        ("+*", a + b * c),
+        ("-+", a - b + c),
+        ("--", a - b - c),
+        ("-*", a - b * c),
+        ("*+", a * b + c),
+        ("*-", a * b - c)
+    };
+
+    if (b != 0 && c != 0)
+    {
+        if (a % b == 0)
+        {
+            operations.Add(("/+", a / b + c));
+            operations.Add(("/-", a / b - c));
+        }
+        if (b % c == 0)
+        {
+            operations.Add(("+/", a + b / c));
+            operations.Add(("-/", a - b / c));
+        }
+        if (a % b == 0 && b % c == 0)
+        {
+            operations.Add(("//", a / b / c));
+        }
+    }
+
+    var validOperations = operations.Where(op => op.Item2 >= 0 && op.Item2 <= 100).ToList();
+
+    if (validOperations.Count == 0)
+    {
+        questionText.text = "Unable to generate a valid question.";
+        return 0;
+    }
+
+    int randomIndex = Random.Range(0, validOperations.Count);
+    var operation = validOperations[randomIndex];
+    string opSign = operation.Item1;
+    correctAnswer = operation.Item2;
+
+    string question = $"Ile to: {a} {opSign[0]} {b}";
+    if (opSign.Length > 1)
+    {
+        question += $" {opSign[1]} {c}?";
+    }
+    else
+    {
+        question += $" {c}?";
+    }
+
+    questionText.text = question;
+    return correctAnswer;
+}
+
+
+
+
+
+
+
 
 
     void SetAnswers(int correctAnswer)
