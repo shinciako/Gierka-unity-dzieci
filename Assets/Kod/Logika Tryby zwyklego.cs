@@ -124,6 +124,59 @@ public class GameController : MonoBehaviour
         string opSign = "";
         while (true)
         {
+            a = Random.Range(1, 21);
+            b = Random.Range(1, 21);
+            int operation = Random.Range(0, 4);
+            switch (operation)
+            {
+                case 0:
+                    correctAnswer = a + b;
+                    opSign = "+";
+                    break;
+                case 1:
+                    if (a >= b)
+                    {
+                        correctAnswer = a - b;
+                        opSign = "-";
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    break;
+                case 2:
+                    correctAnswer = a * b;
+                    opSign = "*";
+                    break;
+                case 3:
+                    if (a % b == 0)
+                    {
+                        correctAnswer = a / b;
+                        opSign = "/";
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    break;
+            }
+
+            if (correctAnswer >= 0 && correctAnswer <= 50)
+            {
+                break;
+            }
+        }
+
+        questionText.text = $"Ile to: {a} {opSign} {b}?";
+        return correctAnswer;
+    }
+
+    int GenerateQuestionMid()
+    {
+        int a, b, correctAnswer = 0;
+        string opSign = "";
+        while (true)
+        {
             a = Random.Range(1, 51);
             b = Random.Range(1, 51);
             int operation = Random.Range(0, 4);
@@ -168,67 +221,6 @@ public class GameController : MonoBehaviour
         }
 
         questionText.text = $"Ile to: {a} {opSign} {b}?";
-        return correctAnswer;
-    }
-
-    int GenerateQuestionMid()
-    {
-        int correctAnswer = 0;
-        int a, b, c;
-        string opSign = "";
-
-        a = Random.Range(1, 51);
-        b = Random.Range(1, 51);
-        c = Random.Range(1, 51);
-
-        int operation = Random.Range(0, 3); // 0 for +, 1 for -, 2 for *
-
-        switch (operation)
-        {
-            case 0:
-                correctAnswer = a + b + c;
-                opSign = "++";
-                break;
-            case 1:
-                if (a >= b && b >= c)
-                {
-                    correctAnswer = a - b - c;
-                    opSign = "--";
-                }
-                else if (a >= b && b < c)
-                {
-                    correctAnswer = a - b + c;
-                    opSign = "-+";
-                }
-                else
-                {
-                    GenerateQuestionMid(); // Retry if conditions not met
-                    return 0;
-                }
-                break;
-            case 2:
-                correctAnswer = a * b * c;
-                opSign = "**";
-                break;
-            default:
-                correctAnswer = a + b + c; // Default to addition if no valid operation selected
-                opSign = "++";
-                break;
-        }
-
-        string question = $"Ile to: {a} {opSign[0]} {b}";
-        if (opSign.Length > 1)
-        {
-            question += $" {opSign[1]} {c}?";
-        }
-        else
-        {
-            question += $" {c}?";
-        }
-
-        Debug.Log($"Generated Question: {question} = {correctAnswer}");
-        questionText.text = question;
-
         return correctAnswer;
     }
 
