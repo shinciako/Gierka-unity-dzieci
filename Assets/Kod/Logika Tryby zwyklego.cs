@@ -28,8 +28,6 @@ public class GameController : MonoBehaviour
     private float startTime;
     private float elapsedTime;
 
-    
-
     void Start()
     {
         if (FindObjectOfType<EventSystem>() == null)
@@ -42,7 +40,6 @@ public class GameController : MonoBehaviour
         progressBar.max = numOfQuestions;
         InitializeAnswerButtons();
         wrongAnswerPopup.SetActive(false);
-        GenerateQuestion();
         UpdateScore(0);
         startTime = Time.realtimeSinceStartup;
     }
@@ -64,6 +61,7 @@ public class GameController : MonoBehaviour
                     numOfQuestions = 20;
                     break;
                 default:
+                    numOfQuestions = 10;
                     break;
             }
         }
@@ -73,11 +71,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void Update(){
+    void Update()
+    {
         elapsedTime = Time.realtimeSinceStartup - startTime;
     }
 
-     void InitializeAnswerButtons()
+    void InitializeAnswerButtons()
     {
         for (int i = 0; i < answerButtons.Length; i++)
         {
@@ -89,32 +88,34 @@ public class GameController : MonoBehaviour
     void GenerateQuestion()
     {
         wrongAnswerPopup.SetActive(false);
-        int correctAnswerQ=0;
+        int correctAnswerQ = 0;
         switch (savedDifficulty)
-            {
-                case 0:
-                    correctAnswerQ = GenerateQuestionEasy();
-                    break;
-                case 1:
-                    correctAnswerQ = GenerateQuestionMid();
-                    break;
-                case 2:
-                    correctAnswerQ = GenerateQuestionEasy();
-                    break;
-                default:
-                    break;
-            }
+        {
+            case 0:
+                correctAnswerQ = GenerateQuestionEasy();
+                break;
+            case 1:
+                correctAnswerQ = GenerateQuestionMid();
+                break;
+            case 2:
+                correctAnswerQ = GenerateQuestionHard();
+                break;
+            default:
+                correctAnswerQ = GenerateQuestionEasy();
+                break;
+        }
         SetAnswers(correctAnswerQ);
     }
 
-    int GenerateQuestionEasy(){
+    int GenerateQuestionEasy()
+    {
         int a, b, correctAnswer = 0;
         string opSign = "";
         while (true)
         {
             a = Random.Range(1, 51);
             b = Random.Range(1, 51);
-            int operation = Random.Range(0, 4); // 0 +, 1 -, 2 *, 3 /
+            int operation = Random.Range(0, 4);
             switch (operation)
             {
                 case 0:
@@ -129,7 +130,7 @@ public class GameController : MonoBehaviour
                     }
                     else
                     {
-                        continue; // skip if negative
+                        continue;
                     }
                     break;
                 case 2:
@@ -144,12 +145,11 @@ public class GameController : MonoBehaviour
                     }
                     else
                     {
-                        continue; //skip not exact
+                        continue;
                     }
                     break;
             }
 
-            // score 0-100
             if (correctAnswer >= 0 && correctAnswer <= 100)
             {
                 break;
@@ -160,82 +160,166 @@ public class GameController : MonoBehaviour
         return correctAnswer;
     }
 
-
-int GenerateQuestionMid()
-{
-    wrongAnswerPopup.SetActive(false);
-
-    int correctAnswer = 0;
-
-    int a = Random.Range(1, 51);
-    int b = Random.Range(1, 51);
-    int c = Random.Range(1, 51);
-
-    //all comb without double */
-    List<(string, int)> operations = new List<(string, int)>
+    int GenerateQuestionMid()
     {
-        ("++", a + b + c),
-        ("+-", a + b - c),
-        ("+*", a + b * c),
-        ("-+", a - b + c),
-        ("--", a - b - c),
-        ("-*", a - b * c),
-        ("*+", a * b + c),
-        ("*-", a * b - c)
-    };
+        int correctAnswer = 0;
+        int a = 0, b = 0, c = 0;
+        List<(string, int)> validOperations = new List<(string, int)>();
 
-    if (b != 0 && c != 0)
-    {
-        if (a % b == 0)
+        while (validOperations.Count == 0)
         {
-            operations.Add(("/+", a / b + c));
-            operations.Add(("/-", a / b - c));
+            a = Random.Range(1, 51);
+            b = Random.Range(1, 51);
+            c = Random.Range(1, 51);
+
+            List<(string, int)> operations = new List<(string, int)>
+            {
+                ("++", a + b + c),
+                ("+-", a + b - c),
+                ("+*", a + b * c),
+                ("-+", a - b + c),
+                ("--", a - b - c),
+                ("-*", a - b * c),
+                ("*+", a * b + c),
+                ("*-", a * b - c)
+            };
+
+            List<(string, int)> verifiedOperations = new List<(string, int)>();
+
+            if (b != 0 && a % b == 0) 
+            {
+                verifiedOperations.Add(("/+", a / b + c));
+                verifiedOperations.Add(("/-", a / b - c));
+            }
+            if (c != 0 && b % c == 0)
+            {
+                verifiedOperations.Add(("+/", a + b / c));
+                verifiedOperations.Add(("-/", a - b / c));
+            }
+            if (b != 0 && c != 0 && a % b == 0 && (a / b) % c == 0)
+            {
+                verifiedOperations.Add(("//", a / b / c));
+            }
+
+            verifiedOperations.AddRange(operations);
+            validOperations = verifiedOperations.Where(op => op.Item2 >= 0 && op.Item2 <= 150).ToList();
         }
-        if (b % c == 0)
+
+        int randomIndex = Random.Range(0, validOperations.Count);
+        var operation = validOperations[randomIndex];
+        string opSign = operation.Item1;
+        correctAnswer = operation.Item2;
+
+        string question = $"Ile to: {a} {opSign[0]} {b}";
+        if (opSign.Length > 1)
         {
-            operations.Add(("+/", a + b / c));
-            operations.Add(("-/", a - b / c));
+            question += $" {opSign[1]} {c}?";
         }
-        if (a % b == 0 && b % c == 0)
+        else
         {
-            operations.Add(("//", a / b / c));
+            question += $" {c}?";
         }
+
+        Debug.Log($"Generated Question: {question} = {correctAnswer}");
+        questionText.text = question;
+        return correctAnswer;
     }
 
-    var validOperations = operations.Where(op => op.Item2 >= 0 && op.Item2 <= 100).ToList();
-
-    if (validOperations.Count == 0)
+    int GenerateQuestionHard()
     {
-        questionText.text = "Unable to generate a valid question.";
-        return 0;
+        int correctAnswer = 0;
+        int a = 0, b = 0, c = 0, d = 0;
+        List<(string, int)> validOperations = new List<(string, int)>();
+
+        while (validOperations.Count == 0)
+        {
+            a = Random.Range(1, 51);
+            b = Random.Range(1, 51);
+            c = Random.Range(1, 51);
+            d = Random.Range(1, 51);
+
+            List<(string, int)> operations = new List<(string, int)>
+            {
+                ("+++", a + b + c + d),
+                ("++-", a + b + c - d),
+                ("+-+-", a + b - c - d),
+                ("+*-", a + b * c - d),
+                ("--+", a - b - c + d),
+                ("---", a - b - c - d),
+                ("-*-", a - b * c - d),
+                ("*++", a * b + c + d),
+                ("*+-", a * b + c - d),
+                ("*-+", a * b - c + d),
+                ("*--", a * b - c - d)
+            };
+
+            List<(string, int)> verifiedOperations = new List<(string, int)>();
+
+            if (b > 0 && a % b == 0)
+            {
+                int intermediateResult = a / b;
+                verifiedOperations.Add(("/++", intermediateResult + c + d));
+                verifiedOperations.Add(("/+-", intermediateResult + c - d));
+                verifiedOperations.Add(("/-+", intermediateResult - c + d));
+                verifiedOperations.Add(("/--", intermediateResult - c - d));
+                if (c > 0 && intermediateResult % c == 0)
+                {
+                    intermediateResult = intermediateResult / c;
+                    verifiedOperations.Add(("//+", intermediateResult + d));
+                    verifiedOperations.Add(("//-", intermediateResult - d));
+                    if (d > 0 && intermediateResult % d == 0)
+                    {
+                        intermediateResult = intermediateResult / d;
+                        verifiedOperations.Add(("///", intermediateResult));
+                    }
+                }
+            }
+            if (c > 0 && b % c == 0)
+            {
+                int intermediateResult = b / c;
+                verifiedOperations.Add(("+/+", a + intermediateResult + d));
+                verifiedOperations.Add(("+/-", a + intermediateResult - d));
+                verifiedOperations.Add(("-/+", a - intermediateResult + d));
+                verifiedOperations.Add(("-/-", a - intermediateResult - d));
+                if (d > 0 && intermediateResult % d == 0)
+                {
+                    intermediateResult = intermediateResult / d;
+                    verifiedOperations.Add(("+//", a + intermediateResult));
+                    verifiedOperations.Add(("-//", a - intermediateResult));
+                }
+            }
+            if (d > 0 && c % d == 0)
+            {
+                int intermediateResult = c / d;
+                verifiedOperations.Add(("+/+", a + b + intermediateResult));
+                verifiedOperations.Add(("+/-", a + b - intermediateResult));
+                verifiedOperations.Add(("-/+", a - b + intermediateResult));
+                verifiedOperations.Add(("-/-", a - b - intermediateResult));
+            }
+
+            verifiedOperations.AddRange(operations);
+            validOperations = verifiedOperations.Where(op => op.Item2 >= 0 && op.Item2 <= 200).ToList();
+        }
+
+        int randomIndex = Random.Range(0, validOperations.Count);
+        var operation = validOperations[randomIndex];
+        string opSign = operation.Item1;
+        correctAnswer = operation.Item2;
+
+        string question = $"Ile to: {a} {opSign[0]} {b} {opSign[1]} {c}";
+        if (opSign.Length > 2)
+        {
+            question += $" {opSign[2]} {d}?";
+        }
+        else
+        {
+            question += $" {d}?";
+        }
+
+        Debug.Log($"Generated Question: {question} = {correctAnswer}");
+        questionText.text = question;
+        return correctAnswer;
     }
-
-    int randomIndex = Random.Range(0, validOperations.Count);
-    var operation = validOperations[randomIndex];
-    string opSign = operation.Item1;
-    correctAnswer = operation.Item2;
-
-    string question = $"Ile to: {a} {opSign[0]} {b}";
-    if (opSign.Length > 1)
-    {
-        question += $" {opSign[1]} {c}?";
-    }
-    else
-    {
-        question += $" {c}?";
-    }
-
-    questionText.text = question;
-    return correctAnswer;
-}
-
-
-
-
-
-
-
-
 
     void SetAnswers(int correctAnswer)
     {
@@ -285,22 +369,26 @@ int GenerateQuestionMid()
     void UpdateScore(int change)
     {
         score += change;
-        if(score==numOfQuestions){
+        if (score == numOfQuestions)
+        {
             buttonMenu.SetActive(false);
             int accurate = CalculatePercentage();
-            winPopup.SetNumbers(accurate,elapsedTime);
+            winPopup.SetNumbers(accurate, elapsedTime);
             pop.SetActive(true);
-        }else{
-            scoreText.text = "Pytanie: " + (1+score).ToString() +" z "+numOfQuestions;
+        }
+        else
+        {
+            scoreText.text = "Pytanie: " + (1 + score) + " z " + numOfQuestions;
             GenerateQuestion();
         }
     }
 
-    int CalculatePercentage(){
-    float percentage = ((float)numOfQuestions / (float)tries) * 100.0f;
-    int roundedPercentage = Mathf.CeilToInt(percentage);
-    return roundedPercentage;
-}
+    int CalculatePercentage()
+    {
+        float percentage = ((float)numOfQuestions / (float)tries) * 100.0f;
+        int roundedPercentage = Mathf.CeilToInt(percentage);
+        return roundedPercentage;
+    }
 
     void UpdateProgressBar()
     {
