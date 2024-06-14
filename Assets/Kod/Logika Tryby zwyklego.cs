@@ -16,10 +16,12 @@ public class GameController : MonoBehaviour
     public GameObject pop;
     public GameObject buttonMenu;
     public ProgressBar progressBar;
+    private string difficultyKey = "SelectedDifficulty";
+    private int savedDifficulty;
 
     private int score = 0;
     private int correctAnswerIndex;
-    private int numOfQuestions=2;
+    private int numOfQuestions;
     private int tries = 0;
 
     private float startTime;
@@ -35,12 +37,39 @@ public class GameController : MonoBehaviour
             eventSystem.AddComponent<EventSystem>();
             eventSystem.AddComponent<StandaloneInputModule>();
         }
+        LoadSelectedDifficulty();
         progressBar.max = numOfQuestions;
         InitializeAnswerButtons();
         wrongAnswerPopup.SetActive(false);
         GenerateQuestion();
         UpdateScore(0);
         startTime = Time.realtimeSinceStartup;
+    }
+
+    void LoadSelectedDifficulty()
+    {
+        if (PlayerPrefs.HasKey(difficultyKey))
+        {
+            savedDifficulty = PlayerPrefs.GetInt(difficultyKey);
+            switch (savedDifficulty)
+            {
+                case 0:
+                    numOfQuestions = 10;
+                    break;
+                case 1:
+                    numOfQuestions = 15;
+                    break;
+                case 2:
+                    numOfQuestions = 20;
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            numOfQuestions = 10;
+        }
     }
 
     void Update(){
@@ -59,6 +88,25 @@ public class GameController : MonoBehaviour
     void GenerateQuestion()
     {
         wrongAnswerPopup.SetActive(false);
+        int correctAnswerQ=0;
+        switch (savedDifficulty)
+            {
+                case 0:
+                    correctAnswerQ = GenerateQuestionEasy();
+                    break;
+                case 1:
+                    correctAnswerQ = GenerateQuestionEasy();
+                    break;
+                case 2:
+                    correctAnswerQ = GenerateQuestionEasy();
+                    break;
+                default:
+                    break;
+            }
+        SetAnswers(correctAnswerQ);
+    }
+
+    int GenerateQuestionEasy(){
         int a, b, correctAnswer = 0;
         string opSign = "";
         while (true)
@@ -108,8 +156,9 @@ public class GameController : MonoBehaviour
         }
 
         questionText.text = $"Ile to: {a} {opSign} {b}?";
-        SetAnswers(correctAnswer);
+        return correctAnswer;
     }
+
 
     void SetAnswers(int correctAnswer)
     {

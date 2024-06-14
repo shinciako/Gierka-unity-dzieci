@@ -14,7 +14,7 @@ public class LevelControll : MonoBehaviour
     public Color midSelectedColor = Color.yellow;
     public Color hardSelectedColor = new Color(1.0f, 0.6f, 0.66f);
     private Color defaultColor = Color.white;
-     private string difficultyKey;
+     private string difficultyKey = "SelectedDifficulty";
 
     void Start()
     {

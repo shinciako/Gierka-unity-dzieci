@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/Ustawienia.unity
+- path: "Assets/Scenes/Tryb zwyk\u0142y.unity"
   isLoaded: 1
   isActive: 1
   isSubScene: 0
