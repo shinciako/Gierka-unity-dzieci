@@ -12,7 +12,6 @@ public class Podrzad : MonoBehaviour
     public TextMeshProUGUI questionText;
     public TextMeshProUGUI scoreText;
     public Button[] answerButtons;
-    public GameObject wrongAnswerPopup;
     public PopupController winPopup;
     public GameObject pop;
     public GameObject buttonMenu;
@@ -44,7 +43,6 @@ public class Podrzad : MonoBehaviour
 
     void GenerateQuestion()
     {
-        wrongAnswerPopup.SetActive(false);
         int correctAnswerQ = GenerateQuestionEasy();
         SetAnswers(correctAnswerQ);
     }
@@ -138,6 +136,7 @@ public class Podrzad : MonoBehaviour
                 button.interactable = false;
             }
             scoreText.text ="";
+            buttonMenu.SetActive(false);
             winPopup.SetScore(score);
             pop.SetActive(true);
         }
@@ -147,7 +146,7 @@ public class Podrzad : MonoBehaviour
     void UpdateScore(int change)
     {
         score += change;
-        scoreText.text = "Wynik: "+score;
+        scoreText.text = "Seria "+score + " podrząd";
         GenerateQuestion();
     }
 }
