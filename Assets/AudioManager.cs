@@ -20,7 +20,6 @@ public class AudioManager : MonoBehaviour
     }
 
     private void Start(){
-        musicSource.clip = bg;
         musicSource.Play();
     }
 }

@@ -356,6 +356,7 @@
 "Assets/Kod/Logika Tryby zwyklego.cs"
 "Assets/Kod/Obsluga gui.cs"
 "Assets/Kod/ProgressBar.cs"
+"Assets/Kod/Tryby.cs"
 "Assets/LevelControll.cs"
 "Assets/PopupController.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs"

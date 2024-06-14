@@ -26,6 +26,11 @@ public class PopupController : MonoBehaviour
         time.text = ConverseTime(timeEx);
     }
 
+    public void SetNumbersM(int percent, int wynik){
+        accurate.text = "Skuteczność: " +percent+"%";
+        time.text = "Wynik: "+wynik;
+    }
+
     private string ConverseTime(float timeEx)
     {
         int minutes = Mathf.FloorToInt(timeEx / 60);
