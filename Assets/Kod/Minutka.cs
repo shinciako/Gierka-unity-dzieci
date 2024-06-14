@@ -13,7 +13,6 @@ public class Tryby : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI timeText;
     public Button[] answerButtons;
-    public GameObject wrongAnswerPopup;
     public PopupController winPopup;
     public GameObject pop;
     public GameObject buttonMenu;
@@ -88,7 +87,6 @@ public class Tryby : MonoBehaviour
             buttonText.fontStyle = FontStyles.Normal;
 
         }
-        wrongAnswerPopup.SetActive(false);
         int correctAnswerQ = GenerateQuestionEasy();
         SetAnswers(correctAnswerQ);
         if (wrongAnswerCoroutine != null)

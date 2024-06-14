@@ -12,7 +12,6 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI questionText;
     public TextMeshProUGUI scoreText;
     public Button[] answerButtons;
-    public GameObject wrongAnswerPopup;
     public PopupController winPopup;
     public GameObject pop;
     public GameObject buttonMenu;
@@ -39,7 +38,6 @@ public class GameController : MonoBehaviour
         LoadSelectedDifficulty();
         progressBar.max = numOfQuestions;
         InitializeAnswerButtons();
-        wrongAnswerPopup.SetActive(false);
         UpdateScore(0);
         startTime = Time.realtimeSinceStartup;
     }
@@ -87,7 +85,16 @@ public class GameController : MonoBehaviour
 
     void GenerateQuestion()
     {
-        wrongAnswerPopup.SetActive(false);
+         foreach (Button button in answerButtons)
+        {
+            button.interactable = true;
+            button.image.enabled = true;
+            TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+            buttonText.color = Color.black;
+            buttonText.fontSize = 24;
+            buttonText.fontStyle = FontStyles.Normal;
+
+        }
         int correctAnswerQ = 0;
         switch (savedDifficulty)
         {
@@ -105,6 +112,10 @@ public class GameController : MonoBehaviour
                 break;
         }
         SetAnswers(correctAnswerQ);
+        if (wrongAnswerCoroutine != null)
+        {
+        StopCoroutine(wrongAnswerCoroutine);
+        }
     }
 
     int GenerateQuestionEasy()
@@ -163,52 +174,47 @@ public class GameController : MonoBehaviour
     int GenerateQuestionMid()
     {
         int correctAnswer = 0;
-        int a = 0, b = 0, c = 0;
-        List<(string, int)> validOperations = new List<(string, int)>();
+        int a, b, c;
+        string opSign = "";
 
-        while (validOperations.Count == 0)
+        a = Random.Range(1, 51);
+        b = Random.Range(1, 51);
+        c = Random.Range(1, 51);
+
+        int operation = Random.Range(0, 3); // 0 for +, 1 for -, 2 for *
+
+        switch (operation)
         {
-            a = Random.Range(1, 51);
-            b = Random.Range(1, 51);
-            c = Random.Range(1, 51);
-
-            List<(string, int)> operations = new List<(string, int)>
-            {
-                ("++", a + b + c),
-                ("+-", a + b - c),
-                ("+*", a + b * c),
-                ("-+", a - b + c),
-                ("--", a - b - c),
-                ("-*", a - b * c),
-                ("*+", a * b + c),
-                ("*-", a * b - c)
-            };
-
-            List<(string, int)> verifiedOperations = new List<(string, int)>();
-
-            if (b != 0 && a % b == 0) 
-            {
-                verifiedOperations.Add(("/+", a / b + c));
-                verifiedOperations.Add(("/-", a / b - c));
-            }
-            if (c != 0 && b % c == 0)
-            {
-                verifiedOperations.Add(("+/", a + b / c));
-                verifiedOperations.Add(("-/", a - b / c));
-            }
-            if (b != 0 && c != 0 && a % b == 0 && (a / b) % c == 0)
-            {
-                verifiedOperations.Add(("//", a / b / c));
-            }
-
-            verifiedOperations.AddRange(operations);
-            validOperations = verifiedOperations.Where(op => op.Item2 >= 0 && op.Item2 <= 150).ToList();
+            case 0:
+                correctAnswer = a + b + c;
+                opSign = "++";
+                break;
+            case 1:
+                if (a >= b && b >= c)
+                {
+                    correctAnswer = a - b - c;
+                    opSign = "--";
+                }
+                else if (a >= b && b < c)
+                {
+                    correctAnswer = a - b + c;
+                    opSign = "-+";
+                }
+                else
+                {
+                    GenerateQuestionMid(); // Retry if conditions not met
+                    return 0;
+                }
+                break;
+            case 2:
+                correctAnswer = a * b * c;
+                opSign = "**";
+                break;
+            default:
+                correctAnswer = a + b + c; // Default to addition if no valid operation selected
+                opSign = "++";
+                break;
         }
-
-        int randomIndex = Random.Range(0, validOperations.Count);
-        var operation = validOperations[randomIndex];
-        string opSign = operation.Item1;
-        correctAnswer = operation.Item2;
 
         string question = $"Ile to: {a} {opSign[0]} {b}";
         if (opSign.Length > 1)
@@ -222,8 +228,11 @@ public class GameController : MonoBehaviour
 
         Debug.Log($"Generated Question: {question} = {correctAnswer}");
         questionText.text = question;
+
         return correctAnswer;
     }
+
+
 
     int GenerateQuestionHard()
     {
@@ -320,6 +329,8 @@ public class GameController : MonoBehaviour
         return correctAnswer;
     }
 
+    private Coroutine wrongAnswerCoroutine;
+
     void SetAnswers(int correctAnswer)
     {
         correctAnswerIndex = Random.Range(0, answerButtons.Length);
@@ -345,25 +356,46 @@ public class GameController : MonoBehaviour
     }
 
     public void AnswerButtonClicked(int buttonIndex)
+{
+    tries++;
+    if (buttonIndex == correctAnswerIndex)
     {
-        tries++;
-        if (buttonIndex == correctAnswerIndex)
+        UpdateScore(1);
+        UpdateProgressBar();
+        if (wrongAnswerCoroutine != null)
         {
-            UpdateScore(1);
-            UpdateProgressBar();
-        }
-        else
-        {
-            StartCoroutine(ShowWrongAnswerPopup());
+            StopCoroutine(wrongAnswerCoroutine);
         }
     }
+    else
+    {
+        if (wrongAnswerCoroutine != null)
+        {
+            StopCoroutine(wrongAnswerCoroutine);
+        }
+        wrongAnswerCoroutine = StartCoroutine(ShowWrongAnswerPopup(buttonIndex));
+    }
+}
 
-    IEnumerator ShowWrongAnswerPopup()
+    IEnumerator ShowWrongAnswerPopup(int index)
     {
-        wrongAnswerPopup.SetActive(true);
-        yield return new WaitForSeconds(2);
-        wrongAnswerPopup.SetActive(false);
-    }
+    answerButtons[index].interactable = false;
+    answerButtons[index].image.enabled = false;
+    
+    TextMeshProUGUI childText = answerButtons[index].GetComponentInChildren<TextMeshProUGUI>();
+    
+    childText.text = "Niepoprawna odpowiedź";
+    childText.color = Color.red;
+    childText.fontSize = 30; 
+    childText.fontStyle = FontStyles.Bold;
+
+    yield return new WaitForSeconds(1);
+
+    childText.text = "";
+    childText.color = Color.white; 
+    childText.fontSize = 20; 
+    childText.fontStyle = FontStyles.Normal; 
+}
 
     void UpdateScore(int change)
     {
