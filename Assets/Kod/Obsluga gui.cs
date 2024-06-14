@@ -3,13 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    // Loading new game
     public void LoadNewGame()
     {
-        // Loading new scene
         SceneManager.LoadScene("Tryb zwykły");
     }
-    // Function of loading menu
     public void LoadMenu()
     {
       
@@ -24,13 +21,18 @@ public class MenuController : MonoBehaviour
     public void LoadSettings() =>
         SceneManager.LoadScene("Ustawienia");
 
+    public void LoadMinutka() =>
+        SceneManager.LoadScene("Minutka");
+
+
+    public void LoadPoorzednia() =>
+        SceneManager.LoadScene("Podrzad");
     public void ChangeDifficulty(){
         
     }
 
     public void ExitGame()
     {
-        // Zamyka aplikację
         Application.Quit();
     }
 }

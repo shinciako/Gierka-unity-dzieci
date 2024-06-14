@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: "Assets/Scenes/Tryb zwyk\u0142y.unity"
     guid: 64114e753ebf9402a97f7426e55cb614
+  - enabled: 1
+    path: Assets/Scenes/Minutka.unity
+    guid: 87a6edefff5784caea197a05fa7c7a24
+  - enabled: 1
+    path: Assets/Scenes/Podrzad.unity
+    guid: c8b7823b354a34e8c9169c32299c0d0c
   m_configObjects: {}
