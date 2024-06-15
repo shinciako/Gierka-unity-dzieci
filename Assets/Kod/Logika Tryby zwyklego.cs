@@ -118,7 +118,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    int GenerateQuestionEasy()
+    public int GenerateQuestionEasy()
     {
         int a, b, correctAnswer = 0;
         string opSign = "";
@@ -171,7 +171,7 @@ public class GameController : MonoBehaviour
         return correctAnswer;
     }
 
-    int GenerateQuestionMid()
+    public int GenerateQuestionMid()
     {
         int a, b, correctAnswer = 0;
         string opSign = "";
@@ -226,7 +226,7 @@ public class GameController : MonoBehaviour
 
 
 
-    int GenerateQuestionHard()
+    public int GenerateQuestionHard()
     {
         int correctAnswer = 0;
         int a = 0, b = 0, c = 0, d = 0;
